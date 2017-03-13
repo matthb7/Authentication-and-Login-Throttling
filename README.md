@@ -26,16 +26,16 @@ The following **required** functionality is completed:
   * [X]  Do not create a User Enumeration vulnerability.
 
 5\. If a user fails to log in:
-  * [ ]  Record the failed login for the first 5 attempts.
-  * [ ]  Return a "too many failed logins" message after 5 attempts.
-  * [ ]  Future attempts will show the number of minutes remaining in the lockout.
-  * [ ]  After the lockout period, the failed logins count resets to 0.
+  * [X]  Record the failed login for the first 5 attempts.
+  * [X]  Return a "too many failed logins" message after 5 attempts.
+  * [X]  Future attempts will show the number of minutes remaining in the lockout.
+  * [X]  After the lockout period, the failed logins count resets to 0.
 
 6\. After any successful login:
-  * [ ]  Set the failed_logins.count for the username to 0.
+  * [X]  Set the failed_logins.count for the username to 0.
 
 7\. SQLi and XSS
-  * [ ]  Do not introduce any SQLI Injection and Cross-Site Scripting vulnerabilities.
+  * [X]  Do not introduce any SQLI Injection and Cross-Site Scripting vulnerabilities.
 
 The following advanced user stories are optional:
 
@@ -69,7 +69,7 @@ The following advanced user stories are optional:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='globitek_week6/globitek_week6.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
