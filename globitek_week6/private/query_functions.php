@@ -605,50 +605,22 @@
     }
   }
 
-  function find_failed_login_by_username($username) {
+  function find_failed_login($username) {
     global $db;
-    
-    $sql = "SELECT FROM failed_logins ";
+    $sql = "SELECT * FROM failed_logins ";
     $sql .= "WHERE username='" . db_escape($db, $username) . "';";
     $result = db_query($db, $sql);
-    if($result) {
-      return $result;
-    } else {
-      return false;
-    }
+    return $result;
   }
 
-  function update_failed_login($failed_login) {
+  function insert_failed_login($failed_login) {
     global $db;
-
-    $update_count = $failed_login['count'] + 1;
-    $sql = "UPDATE failed_logins SET ";
-    $sql .= "count='" . $update_count . "', ";
-    $sql .= "last_attempt='" . date("Y-m-d H:i:s") . "' ";
-    $sql .= "WHERE id='" . $failed_login['id'] . "' ";
-    $sql .= "LIMIT 1;";
-    // For UPDATE statements, $result is just true/false
-    $result = db_query($db, $sql);
-    if($result) {
-      return true;
-    } else {
-      // The SQL UPDATE statement failed.
-      // Just show the error, not the form
-      echo db_error($db);
-      db_close($db);
-      exit;
-    }
-  }
-
-  function insert_failed_login($username) {
-    global $db;
-
     $sql = "INSERT INTO failed_logins ";
     $sql .= "(username, count, last_attempt) ";
     $sql .= "VALUES (";
-    $sql .= "'" . db_escape($db, $username) . "',";
-    $sql .= "'" . 1 . "',";
-    $sql .= "'" . date("Y-m-d H:i:s") . "'";
+    $sql .= "'" . db_escape($db, $failed_login['username']) . "',";
+    $sql .= "'" . $failed_login['count'] . "',";
+    $sql .= "'" . $failed_login['last_attempt'] . "'";
     $sql .= ");";
     // For INSERT statements, $result is just true/false
     $result = db_query($db, $sql);
@@ -663,40 +635,13 @@
     }
   }
 
-  function failed_login($user) {
+  function update_failed_login($failed_login) {
     global $db;
-
-    $errors = validate_user($user);
-    if (!empty($errors)) {
-      return $errors;
-    }
-
-    $sql = "";
-    $exceed_limit = false;
-    $errors = "";
-    $failed_login = find_failed_login_by_username($user['username']);
-    if ($failed_login) {
-      if ($failed_login['count'] + 1 >= 5) {
-        return "Too many failed logins for this username. You will need to wait 5 minutes before attempting another login.";
-      }
-      update_failed_login($failed_login);
-      return "Log in was unsuccessful.";
-    } else {
-      insert_failed_login($user['username']);
-      return "Log in was unsuccessful.";
-    }
-  }
-
-  function log_in_success_query($user) {
-    global $db;
-
-    $failed_login = find_failed_login_by_username($user['username']);
-    if ($failed_login) {
-      $sql .= "UPDATE failed_logins SET ";
-      $sql .= "count='" . 0 . "', ";
-      $sql .= "WHERE id='" . $failed_login['id'] . "' ";
-      $sql .= "LIMIT 1;";
-    }
+    $sql = "UPDATE failed_logins SET ";
+    $sql .= "count='" . $failed_login['count'] . "', ";
+    $sql .= "last_attempt='" . $failed_login['last_attempt'] . "' ";
+    $sql .= "WHERE username='" . $failed_login['username'] . "' ";
+    $sql .= "LIMIT 1;";
     // For UPDATE statements, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
