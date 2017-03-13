@@ -28,7 +28,7 @@ The following **required** functionality is completed:
 5\. If a user fails to log in:
   * [X]  Record the failed login for the first 5 attempts.
   * [X]  Return a "too many failed logins" message after 5 attempts.
-  * [X]  Future attempts will show the number of minutes remaining in the lockout.
+  * [ ]  Future attempts will show the number of minutes remaining in the lockout.
   * [X]  After the lockout period, the failed logins count resets to 0.
 
 6\. After any successful login:
