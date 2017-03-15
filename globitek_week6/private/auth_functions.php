@@ -70,6 +70,24 @@
     }
   }
 
+  function user_not_locked($username) {
+    $fl_result = find_failed_login($username);
+    $failed_login = db_fetch_assoc($fl_result);
+
+    if($failed_login) {
+      $dif = time() - strtotime($failed_login['last_attempt']);
+      if ($failed_login['count'] >= 5 && $dif >= 5 * 60) {
+        $failed_login['count'] = 0;
+        update_failed_login($failed_login);
+        return "";
+      }
+      if ($failed_login['count'] >= 5 && $dif < 5 * 60) {
+        return "Too many failed logins for this username. You will need to wait " . ceil((5 * 60 - $dif)/60) . " minutes before attempting another login.";
+      }
+    }
+    return "";
+  }
+
   function record_failed_login($username) {
     $sql_date = date("Y-m-d H:i:s");
 
@@ -95,16 +113,11 @@
       if ($failed_login['count'] == 5) {
       	return "Too many failed logins for this username. You will need to wait 5 minutes before attempting another login.";
       }
-      if($failed_login['count'] > 5) {
-      	return "Too many failed logins for this username. You will need to wait before attempting another login.";
-      }
     }
     return "Log in was not successful.";
   }
 
   function record_success_login($username) {
-  	$sql_date = date("Y-m-d H:i:s");
-
     $fl_result = find_failed_login($username);
     $failed_login = db_fetch_assoc($fl_result);
 
