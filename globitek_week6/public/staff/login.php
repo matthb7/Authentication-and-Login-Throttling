@@ -33,15 +33,20 @@ if(is_post_request() && request_is_same_domain()) {
     // No loop, only one result
     $user = db_fetch_assoc($users_result);
     if($user) {
-      if(password_verify($password, $user['hashed_password'])) {
-        // Username found, password matches
-        log_in_user($user);
-        record_success_login($user['username']);
-        // Redirect to the staff menu after login
-        redirect_to('index.php');
+      $not_locked_res = user_not_locked($user['username']);
+      if($not_locked_res == "") {
+        if(password_verify($password, $user['hashed_password'])) {
+          // Username found, password matches
+          log_in_user($user);
+          record_success_login($user['username']);
+          // Redirect to the staff menu after login
+          redirect_to('index.php');
+        } else {
+          // Username found, but password does not match.
+          $errors[] = record_failed_login($user['username']);
+        }
       } else {
-        // Username found, but password does not match.
-        $errors[] = record_failed_login($user['username']);
+        $errors[] = $not_locked_res;
       }
     } else {
       // No username found
